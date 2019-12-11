@@ -151,17 +151,30 @@ export class WalletListModal extends Component<Props, LocalState> {
       return records
     }
     const upperCaseInput = input.toUpperCase()
+    const inputCapitalized = input.charAt(0).toUpperCase() + input.slice(1)
     const filteredRecords = []
     for (let i = 0; i < records.length; i++) {
       const record: Record = records[i]
       const { walletItem, supportedWalletType } = record
       if (walletItem) {
-        const tokens = walletItem.enabledTokens.toString()
+        const tokenNamesObject = {}
+        const { name, currencyCode, currencyNames, enabledTokens } = walletItem
+        enabledTokens.forEach(token => {
+          tokenNamesObject[token] = currencyNames[token]
+        })
+        const currencyName = currencyNames[currencyCode].toString()
+        const tokenCodes = enabledTokens.toString()
+        const tokenNames = JSON.stringify(tokenNamesObject)
         if (
-          walletItem.name.includes(input) ||
-          walletItem.currencyCode.includes(upperCaseInput) ||
-          walletItem.enabledTokens.includes(upperCaseInput) ||
-          tokens.includes(upperCaseInput)
+          name.includes(input) ||
+          name.includes(inputCapitalized) ||
+          currencyName.includes(input) ||
+          currencyName.includes(inputCapitalized) ||
+          tokenNames.includes(input) ||
+          tokenNames.includes(inputCapitalized) ||
+          currencyCode.includes(upperCaseInput) ||
+          enabledTokens.includes(upperCaseInput) ||
+          tokenCodes.includes(upperCaseInput)
         ) {
           filteredRecords.push(record)
         }
